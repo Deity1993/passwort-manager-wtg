@@ -1,10 +1,8 @@
 
-import { GoogleGenAI } from "@google/genai";
-
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 export async function analyzeSecurity(passwordsCount: number, recentChangesCount: number) {
   try {
+    const { GoogleGenAI } = await import("@google/genai");
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: `Perform a brief security health check for a password manager vault. 
@@ -20,6 +18,8 @@ export async function analyzeSecurity(passwordsCount: number, recentChangesCount
 
 export async function checkPasswordStrength(password: string): Promise<string> {
   try {
+    const { GoogleGenAI } = await import("@google/genai");
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: `Rate this password strength from 1-10 and explain why in one short sentence: "${password}"`,
