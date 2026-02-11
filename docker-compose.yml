@@ -39,6 +39,10 @@ services:
       PORT: 4000
     ports:
       - "4000:4000"
+    networks:
+      default:
+        aliases:
+          - pwmanager-api
 
 networks:
   traefik:
