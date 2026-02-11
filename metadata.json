@@ -1,0 +1,7 @@
+{
+  "name": "Passwort Manager WTG",
+  "description": "A high-security, offline-capable password management system with client-side encryption and automated synchronization features.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

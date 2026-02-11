@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model User {
+  id           String     @id @default(uuid())
+  username     String     @unique
+  passwordHash String
+  role         Role       @default(USER)
+  active       Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  auditLogs    AuditLog[]
+  credentials  Credential[] @relation("CredentialUpdatedBy")
+  customers    Customer[] @relation("CustomerUpdatedBy")
+}
+
+model Customer {
+  id          String      @id @default(uuid())
+  name        String
+  email       String
+  company     String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  deletedAt   DateTime?
+  version     Int         @default(1)
+  updatedById String?
+  updatedBy   User?       @relation("CustomerUpdatedBy", fields: [updatedById], references: [id])
+  credentials Credential[]
+}
+
+model Credential {
+  id                String    @id @default(uuid())
+  customerId        String
+  title             String
+  username          String
+  encryptedPassword String
+  iv                String
+  url               String?
+  notes             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  deletedAt         DateTime?
+  version           Int       @default(1)
+  updatedById       String?
+  updatedBy         User?     @relation("CredentialUpdatedBy", fields: [updatedById], references: [id])
+  customer          Customer  @relation(fields: [customerId], references: [id])
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  entityType String
+  entityId   String
+  action     String
+  details    String
+  createdAt  DateTime @default(now())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+}
